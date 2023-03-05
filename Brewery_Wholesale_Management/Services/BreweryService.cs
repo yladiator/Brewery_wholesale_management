@@ -69,7 +69,7 @@ namespace Brewery_Wholesale_Management.Services
           .ToList();
         }
 
-        public WholesalerStock AddSale(int beerId, int wholesalerId, int quantity)
+        public WholesalerStock AddOrUpdateWholesalerStock(int beerId, int wholesalerId, int quantity)
         {
             var beer = _dbContext.Beers.FirstOrDefault(b => b.Id == beerId);
             if (beer == null)

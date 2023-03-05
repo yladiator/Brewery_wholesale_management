@@ -62,7 +62,7 @@ namespace Brewery_Wholesale_Management.Controllers
         [HttpPost("{beerId}/sale")]
         public IActionResult AddSale(int beerId, int wholesalerId, int quantity)
         {
-            var result = _breweryService.AddSale(beerId, wholesalerId, quantity);
+            var result = _breweryService.AddOrUpdateWholesalerStock(beerId, wholesalerId, quantity);
             if (result==null)
             {
                 return NotFound();
