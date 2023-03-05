@@ -13,7 +13,7 @@ namespace Brewery_Wholesale_Management.Interfaces
         // Delete a beer
         bool DeleteBeer(int beerId);
 
-        WholesalerStock AddSale(int beerId, int wholesalerId, int quantity);
+        WholesalerStock Add_UpdateWholesalerStock(int beerId, int wholesalerId, int quantity);
 
 
     }

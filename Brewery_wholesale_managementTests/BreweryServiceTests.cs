@@ -155,7 +155,7 @@ namespace Brewery_wholesale_managementTests
         }
 
         [Fact]
-        public void AddSale_WithValidData_AddsSaleAndReturnsWholesalerStock()
+        public void Add_UpdateWholesalerStock_WithValidData_AddsSaleAndReturnsWholesalerStock()
         {
             // Arrange
             using (var context = new BreweryDbContext(_options))
@@ -163,7 +163,7 @@ namespace Brewery_wholesale_managementTests
                 var service = new BreweryService(context);
 
                 // Act
-                var result = service.AddSale(1, 1, 61);
+                var result = service.Add_UpdateWholesalerStock(1, 1, 61);
 
                 // Assert
                 Assert.NotNull(result);

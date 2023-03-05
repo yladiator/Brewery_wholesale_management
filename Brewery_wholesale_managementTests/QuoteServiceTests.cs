@@ -12,10 +12,10 @@ namespace Brewery_wholesale_managementTests
     public class QuoteServiceTests
     {
         private readonly DbContextOptions<BreweryDbContext> _options;
-
+       
         public QuoteServiceTests()
         {
-            _options = new DbContextOptionsBuilder<BreweryDbContext>()
+             _options = new DbContextOptionsBuilder<BreweryDbContext>()
                 .UseInMemoryDatabase(databaseName: "QuotesTestDB")
                 .Options;
 
