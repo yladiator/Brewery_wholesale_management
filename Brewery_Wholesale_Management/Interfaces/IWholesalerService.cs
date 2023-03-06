@@ -2,6 +2,6 @@
 {
     public interface IWholesalerService
     {
-        bool UpdateBeerStock(int wholesalerId, int beerId, int Quantity);
+        Task<bool> UpdateBeerStock(int wholesalerId, int beerId, int Quantity);
     }
 }

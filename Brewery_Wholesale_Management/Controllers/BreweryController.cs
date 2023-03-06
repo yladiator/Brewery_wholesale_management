@@ -19,9 +19,9 @@ namespace Brewery_Wholesale_Management.Controllers
         }
 
         [HttpGet("{breweryId}/beers")]
-        public ActionResult<List<Beer>> GetBeers(int breweryId)
+        public async Task<ActionResult<List<Beer>>> GetBeers(int breweryId)
         {
-            var beers = _breweryService.GetBeersByBrewery(breweryId);
+            var beers = await _breweryService.GetBeersByBrewery(breweryId);
             if (beers == null || !beers.Any())
             {
                 return NotFound();
@@ -30,12 +30,12 @@ namespace Brewery_Wholesale_Management.Controllers
         }
 
         [HttpPost("Add/beers")]
-        public ActionResult<Beer> AddBeer(BeerRequestModel request)
+        public async Task<ActionResult<Beer>> AddBeer(BeerRequestModel request)
         {
            
 
             // Add the new beer object to the brewery service
-            var addedBeer = _breweryService.AddBeer(request);
+            var addedBeer = await _breweryService.AddBeer(request);
 
             if (addedBeer == null)
             {
@@ -49,9 +49,9 @@ namespace Brewery_Wholesale_Management.Controllers
        
 
         [HttpDelete("{breweryId}/beers/{beerId}")]
-        public IActionResult DeleteBeer(int breweryId, int beerId)
+        public async Task<IActionResult> DeleteBeer(int breweryId, int beerId)
         {
-            var result = _breweryService.DeleteBeer(beerId);
+            var result = await _breweryService.DeleteBeer(beerId);
             if (!result)
             {
                 return NotFound();
@@ -59,10 +59,10 @@ namespace Brewery_Wholesale_Management.Controllers
             return NoContent();
         }
 
-        [HttpPost("{beerId}/sale")]
-        public IActionResult AddSale(int beerId, int wholesalerId, int quantity)
+        [HttpPost("{beerId}/Add_UpdateWholesalerStock")]
+        public async Task<IActionResult> Add_UpdateWholesalerStock(int beerId, int wholesalerId, int quantity)
         {
-            var result = _breweryService.Add_UpdateWholesalerStock(beerId, wholesalerId, quantity);
+            var result = await _breweryService.Add_UpdateWholesalerStock(beerId, wholesalerId, quantity);
             if (result==null)
             {
                 return NotFound();

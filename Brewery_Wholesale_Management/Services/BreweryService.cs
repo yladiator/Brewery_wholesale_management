@@ -12,7 +12,7 @@ namespace Brewery_Wholesale_Management.Services
             _dbContext = dbContext;
         }
 
-        public Beer AddBeer(BeerRequestModel request)
+        public async Task<Beer> AddBeer(BeerRequestModel request)
         {
             var beer = new Beer
             {
@@ -21,35 +21,36 @@ namespace Brewery_Wholesale_Management.Services
                 Price = request.Price,
                 BreweryId = request.BreweryId
             };
-            var brewery = _dbContext.Breweries.FirstOrDefault(b => b.Id == beer.BreweryId);
+            var brewery = await _dbContext.Breweries.FirstOrDefaultAsync(b => b.Id == beer.BreweryId);
             if (brewery == null)
             {
                 return null;
             }
 
-            _dbContext.Beers.Add(beer);
-            _dbContext.SaveChanges();
+            await _dbContext.Beers.AddAsync(beer);
+            await _dbContext.SaveChangesAsync();
 
             return beer;
         }
 
-        public bool DeleteBeer(int beerId)
+
+        public async Task<bool> DeleteBeer(int beerId)
         {
-            var beer = _dbContext.Beers.FirstOrDefault(b => b.Id == beerId);
+            var beer = await  _dbContext.Beers.FirstOrDefaultAsync(b => b.Id == beerId);
             if (beer == null)
             {
                 return false;
             }
 
             _dbContext.Beers.Remove(beer);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
 
-        public IEnumerable<Beer> GetBeersByBrewery(int breweryId)
+        public async Task<IEnumerable<Beer>> GetBeersByBrewery(int breweryId)
         {
-            return _dbContext.Beers.Include(b => b.Brewery)//Include(b=> b.Brewery?.Name) //.Include(b => b.Brewery)
+            return await  _dbContext.Beers.Include(b => b.Brewery)//Include(b=> b.Brewery?.Name) //.Include(b => b.Brewery)
           .Include(b => b.WholesalerStocks)
           .Where(b => b.BreweryId == breweryId)
           .Select(b => new Beer
@@ -66,25 +67,25 @@ namespace Brewery_Wholesale_Management.Services
               } : null,
               WholesalerStocks = b.WholesalerStocks
           })
-          .ToList();
+          .ToListAsync();
         }
 
-        public WholesalerStock Add_UpdateWholesalerStock(int beerId, int wholesalerId, int quantity)
+        public async Task<WholesalerStock> Add_UpdateWholesalerStock(int beerId, int wholesalerId, int quantity)
         {
-            var beer = _dbContext.Beers.FirstOrDefault(b => b.Id == beerId);
+            var beer = await _dbContext.Beers.FirstOrDefaultAsync(b => b.Id == beerId);
             if (beer == null)
             {
                 return null;
             }
 
-            var wholesaler = _dbContext.Wholesalers.FirstOrDefault(w => w.Id == wholesalerId);
+            var wholesaler = await  _dbContext.Wholesalers.FirstOrDefaultAsync(w => w.Id == wholesalerId);
             if (wholesaler == null)
             {
                 return null;
             }
 
-            var wholesalerStock = _dbContext.WholesalerStocks
-                .FirstOrDefault(ws => ws.BeerId == beerId && ws.WholesalerId == wholesalerId);
+            var wholesalerStock = await  _dbContext.WholesalerStocks
+                .FirstOrDefaultAsync(ws => ws.BeerId == beerId && ws.WholesalerId == wholesalerId);
 
             if (wholesalerStock == null)
             {
@@ -94,21 +95,17 @@ namespace Brewery_Wholesale_Management.Services
                     WholesalerId = wholesalerId,
                     Quantity = quantity
                 };
-                _dbContext.WholesalerStocks.Add(wholesalerStock);
+                await _dbContext.WholesalerStocks.AddAsync(wholesalerStock);
             }
             else
             {
                 wholesalerStock.Quantity = quantity;
-                _dbContext.WholesalerStocks.Update(wholesalerStock);
+                 _dbContext.WholesalerStocks.Update(wholesalerStock);
             }
 
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return wholesalerStock;
         }
-
-
-
-
     }
 }

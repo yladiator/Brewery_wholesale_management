@@ -40,7 +40,7 @@ namespace Brewery_wholesale_managementTests
         }
 
         [Fact]
-        public void UpdateBeerStock_WithValidData_ShouldUpdateWholesalerStock()
+        public async Task UpdateBeerStock_WithValidData_ShouldUpdateWholesalerStock()
         {
             // Arrange
             var wholesalerId = 1;
@@ -53,7 +53,7 @@ namespace Brewery_wholesale_managementTests
             using (var context = new BreweryDbContext(_options))
             {
                 var service = new WholesalerService(context);
-                var result = service.UpdateBeerStock(wholesalerId, beerId, newQuantity);
+                var result = await service.UpdateBeerStock(wholesalerId, beerId, newQuantity);
 
                 // Assert
                 Assert.True(result);
@@ -65,7 +65,7 @@ namespace Brewery_wholesale_managementTests
         }
 
         [Fact]
-        public void UpdateBeerStock_WithInvalidWholesalerId_ShouldThrowArgumentException()
+        public async Task UpdateBeerStock_WithInvalidWholesalerId_ShouldThrowArgumentException()
         {
             // Arrange
             var invalidWholesalerId = 2;
@@ -79,13 +79,13 @@ namespace Brewery_wholesale_managementTests
 
                 // Assert
 
-                var ex = Assert.Throws<ArgumentException>(() => service.UpdateBeerStock(invalidWholesalerId, beerId, quantity));
+                var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.UpdateBeerStock(invalidWholesalerId, beerId, quantity));
                 Assert.Equal($"Wholesaler with ID {invalidWholesalerId} does not have beer with ID {beerId} in their inventory.", ex.Message);
             }
         }
 
         [Fact]
-        public void UpdateBeerStock_WithInvalidBeerId_ShouldThrowArgumentException()
+        public async Task UpdateBeerStock_WithInvalidBeerId_ShouldThrowArgumentException()
         {
             // Arrange
             var wholesalerId = 1;
@@ -98,7 +98,7 @@ namespace Brewery_wholesale_managementTests
                 var service = new WholesalerService(context);
                
                 // Act and Assert
-                var ex = Assert.Throws<ArgumentException>(() => service.UpdateBeerStock(wholesalerId, invalidBeerId, quantity));
+                var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.UpdateBeerStock(wholesalerId, invalidBeerId, quantity));
                 Assert.Equal($"Wholesaler with ID {wholesalerId} does not have beer with ID {invalidBeerId} in their inventory.", ex.Message);
             }
         }

@@ -1,5 +1,6 @@
 ﻿using Brewery_Wholesale_Management.Interfaces;
 using Brewery_Wholesale_Management.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Brewery_Wholesale_Management.Services
 {
@@ -12,9 +13,9 @@ namespace Brewery_Wholesale_Management.Services
             _dbContext = dbContext;
         }
 
-        public bool UpdateBeerStock(int wholesalerId, int beerId, int Quantity)
+        public async Task<bool> UpdateBeerStock(int wholesalerId, int beerId, int Quantity)
         {
-            var wholesalerStock = _dbContext.WholesalerStocks.FirstOrDefault(ws => ws.WholesalerId == wholesalerId && ws.BeerId == beerId);
+            var wholesalerStock = await  _dbContext.WholesalerStocks.FirstOrDefaultAsync(ws => ws.WholesalerId == wholesalerId && ws.BeerId == beerId);
 
             if (wholesalerStock == null)
             {
@@ -24,7 +25,7 @@ namespace Brewery_Wholesale_Management.Services
             wholesalerStock.Quantity = Quantity;
 
             _dbContext.WholesalerStocks.Update(wholesalerStock);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }

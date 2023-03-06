@@ -32,7 +32,7 @@ namespace Brewery_wholesale_managementTests
         }
 
         [Fact]
-        public void AddBeer_ShouldAddBeerToDatabase()
+        public async Task AddBeer_ShouldAddBeerToDatabase()
         {
             // Arrange
             var brewery = new Brewery { Id = 1, Name = "Test Brewery" };
@@ -48,7 +48,7 @@ namespace Brewery_wholesale_managementTests
 
 
             // Act
-            var result = service.AddBeer(beerRequest);
+            var result = await service.AddBeer(beerRequest);
 
             // Assert
             Assert.NotNull(result);
@@ -71,7 +71,7 @@ namespace Brewery_wholesale_managementTests
         }
 
         [Fact]
-        public void AddBeer_WithInvalidBrewery_ReturnsNull()
+        public async Task AddBeer_WithInvalidBrewery_ReturnsNull()
         {
             // Arrange
             var invalidBreweryId = 999;
@@ -86,48 +86,48 @@ namespace Brewery_wholesale_managementTests
             var service = new BreweryService(new BreweryDbContext(_options));
 
             // Act
-            var result = service.AddBeer(beerRequest);
+            var result = await service.AddBeer(beerRequest);
 
             // Assert
             Assert.Null(result);
         }
 
         [Fact]
-        public void DeleteBeer_WithValidBeerId_DeletesBeerAndReturnsTrue()
+        public async Task DeleteBeer_WithValidBeerId_DeletesBeerAndReturnsTrue()
         {
             // Arrange
             var beerId = 1;
             var service = new BreweryService(new BreweryDbContext(_options));
 
             // Act
-            var result = service.DeleteBeer(beerId);
+            var result = await service.DeleteBeer(beerId);
 
             // Assert
             Assert.True(result);
 
             using (var context = new BreweryDbContext(_options))
             {
-                var deletedBeer = context.Beers.Find(beerId);
+                var deletedBeer = await context.Beers.FindAsync(beerId);
                 Assert.Null(deletedBeer);
             }
         }
 
         [Fact]
-        public void DeleteBeer_WithInvalidBeerId_ReturnsFalse()
+        public async Task DeleteBeer_WithInvalidBeerId_ReturnsFalse()
         {
             // Arrange
             int nonExistentBeerId = 100;
             var service = new BreweryService(new BreweryDbContext(_options));
 
             // Act
-            bool result = service.DeleteBeer(nonExistentBeerId);
+            bool result = await service.DeleteBeer(nonExistentBeerId);
 
             // Assert
             Assert.False(result);
         }
 
         [Fact]
-        public void GetBeersByBrewery_WithValidBreweryId_ReturnsListOfBeers()
+        public async Task GetBeersByBrewery_WithValidBreweryId_ReturnsListOfBeers()
         {
             // Arrange
             using var context = new BreweryDbContext(_options);
@@ -135,7 +135,7 @@ namespace Brewery_wholesale_managementTests
             var breweryId = 1;
 
             // Act
-            var result = service.GetBeersByBrewery(breweryId);
+            var result = await service.GetBeersByBrewery(breweryId);
 
             // Assert
             Assert.NotNull(result);
@@ -155,7 +155,7 @@ namespace Brewery_wholesale_managementTests
         }
 
         [Fact]
-        public void Add_UpdateWholesalerStock_WithValidData_AddsSaleAndReturnsWholesalerStock()
+        public async Task Add_UpdateWholesalerStock_WithValidData_AddsSaleAndReturnsWholesalerStock()
         {
             // Arrange
             using (var context = new BreweryDbContext(_options))
@@ -163,7 +163,7 @@ namespace Brewery_wholesale_managementTests
                 var service = new BreweryService(context);
 
                 // Act
-                var result = service.Add_UpdateWholesalerStock(1, 1, 61);
+                var result = await service.Add_UpdateWholesalerStock(1, 1, 61);
 
                 // Assert
                 Assert.NotNull(result);

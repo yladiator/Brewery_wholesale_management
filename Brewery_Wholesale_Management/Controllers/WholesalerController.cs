@@ -18,11 +18,11 @@ namespace Brewery_Wholesale_Management.Controllers
         }
 
         [HttpPut("{wholesalerId}/beers/{beerId}/stock/{quantity}")]
-        public IActionResult UpdateBeerStock(int wholesalerId, int beerId,int quantity)
+        public async Task<IActionResult> UpdateBeerStock(int wholesalerId, int beerId,int quantity)
         {
             try
             {
-                bool updated = _wholesalerService.UpdateBeerStock(wholesalerId, beerId, quantity);
+                bool updated = await _wholesalerService.UpdateBeerStock(wholesalerId, beerId, quantity);
                 return Ok();
             }
             catch (ArgumentException ex)

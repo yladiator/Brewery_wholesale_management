@@ -12,12 +12,11 @@ namespace Brewery_wholesale_managementTests
     public class QuoteServiceTests
     {
         private readonly DbContextOptions<BreweryDbContext> _options;
-       
         public QuoteServiceTests()
         {
-             _options = new DbContextOptionsBuilder<BreweryDbContext>()
-                .UseInMemoryDatabase(databaseName: "QuotesTestDB")
-                .Options;
+            _options = new DbContextOptionsBuilder<BreweryDbContext>()
+               .UseInMemoryDatabase(databaseName: "QuotesTestDB")
+               .Options;
 
             using (var context = new BreweryDbContext(_options))
             {
@@ -35,28 +34,29 @@ namespace Brewery_wholesale_managementTests
         }
 
         [Fact]
-        public void RequestQuote_WithEmptyQuoteRequestItems_ShouldThrowArgumentException()
+        public async Task RequestQuote_WithEmptyQuoteRequestItems_ShouldThrowArgumentException()
         {
             // Arrange
             var service = new QuoteService(new BreweryDbContext(_options));
 
             // Act and Assert
-            Assert.Throws<ArgumentException>(() => service.RequestQuote(1, new List<QuoteRequestItem>()));
+            await Assert.ThrowsAsync<ArgumentException>(() => service.RequestQuote(1, new List<QuoteRequestItem>()));
         }
 
+
         [Fact]
-        public void RequestQuote_WithNonExistingWholesalerId_ShouldThrowArgumentException()
+        public async Task RequestQuote_WithNonExistingWholesalerId_ShouldThrowArgumentException()
         {
             // Arrange
             var service = new QuoteService(new BreweryDbContext(_options));
             var quoteRequestItems = new List<QuoteRequestItem> { new QuoteRequestItem { BeerId = 1, Quantity = 5 } };
 
             // Act and Assert
-            Assert.Throws<ArgumentException>(() => service.RequestQuote(2, quoteRequestItems));
+            await Assert.ThrowsAsync<ArgumentException>(() => service.RequestQuote(2, quoteRequestItems));
         }
 
         [Fact]
-        public void RequestQuote_WithDuplicateBeerIds_ShouldThrowArgumentException()
+        public async Task RequestQuote_WithDuplicateBeerIds_ShouldThrowArgumentException()
         {
             // Arrange
             var service = new QuoteService(new BreweryDbContext(_options));
@@ -67,44 +67,44 @@ namespace Brewery_wholesale_managementTests
             };
 
             // Act and Assert
-            Assert.Throws<ArgumentException>(() => service.RequestQuote(1, quoteRequestItems));
+            await Assert.ThrowsAsync<ArgumentException>(() => service.RequestQuote(1, quoteRequestItems));
         }
 
         [Fact]
-        public void RequestQuote_WithNonExistingBeerId_ShouldThrowArgumentException()
+        public async Task RequestQuote_WithNonExistingBeerId_ShouldThrowArgumentException()
         {
             // Arrange
             var service = new QuoteService(new BreweryDbContext(_options));
             var quoteRequestItems = new List<QuoteRequestItem> { new QuoteRequestItem { BeerId = 3, Quantity = 5 } };
 
             // Act and Assert
-            Assert.Throws<ArgumentException>(() => service.RequestQuote(1, quoteRequestItems));
+            await Assert.ThrowsAsync<ArgumentException>(() => service.RequestQuote(1, quoteRequestItems));
         }
 
         [Fact]
-        public void RequestQuote_WithNonSoldBeerId_ShouldThrowArgumentException()
+        public async Task RequestQuote_WithNonSoldBeerId_ShouldThrowArgumentException()
         {
             // Arrange
             var service = new QuoteService(new BreweryDbContext(_options));
             var quoteRequestItems = new List<QuoteRequestItem> { new QuoteRequestItem { BeerId = 1, Quantity = 5 } };
 
             // Act and Assert
-            Assert.Throws<ArgumentException>(() => service.RequestQuote(2, quoteRequestItems));
+            await Assert.ThrowsAsync<ArgumentException>(() => service.RequestQuote(2, quoteRequestItems));
         }
 
         [Fact]
-        public void RequestQuote_WithInsufficientBeerStock()
+        public async Task RequestQuote_WithInsufficientBeerStock()
         {
             // Arrange
             var service = new QuoteService(new BreweryDbContext(_options));
             var quoteRequestItems = new List<QuoteRequestItem> { new QuoteRequestItem { BeerId = 1, Quantity = 50 } };
 
             // Act and Assert
-            Assert.Throws<ArgumentException>(() => service.RequestQuote(1, quoteRequestItems));
+            await Assert.ThrowsAsync<ArgumentException>(() => service.RequestQuote(1, quoteRequestItems));
         }
 
         [Fact]
-        public void RequestQuote_WithValidData_ShouldReturnValidQuoteResponse_lessthan10_return170()
+        public async Task RequestQuote_WithValidData_ShouldReturnValidQuoteResponse_lessthan10_return170()
         {
             // Arrange
             var quoteRequestItems = new List<QuoteRequestItem>
@@ -122,7 +122,7 @@ namespace Brewery_wholesale_managementTests
             var service = new QuoteService(new BreweryDbContext(_options));
 
             // Act
-            var result = service.RequestQuote(1, quoteRequestItems);
+            var result = await service.RequestQuote(1, quoteRequestItems);
 
             // Assert
             Assert.NotNull(result);
@@ -140,7 +140,7 @@ namespace Brewery_wholesale_managementTests
         }
 
         [Fact]
-        public void RequestQuote_WithValidData_ShouldReturnValidQuoteResponse_biggerthan10_return_217_8()
+        public async Task RequestQuote_WithValidData_ShouldReturnValidQuoteResponse_biggerthan10_return_217_8()
         {
             // Arrange
             var quoteRequestItems = new List<QuoteRequestItem>
@@ -158,7 +158,7 @@ namespace Brewery_wholesale_managementTests
             var service = new QuoteService(new BreweryDbContext(_options));
 
             // Act
-            var result = service.RequestQuote(1, quoteRequestItems);
+            var result = await service.RequestQuote(1, quoteRequestItems);
 
             // Assert
             Assert.NotNull(result);
@@ -176,7 +176,7 @@ namespace Brewery_wholesale_managementTests
         }
 
         [Fact]
-        public void RequestQuote_WithValidData_ShouldReturnValidQuoteResponse_biggerthan20_return_388_8()
+        public async Task RequestQuote_WithValidData_ShouldReturnValidQuoteResponse_biggerthan20_return_388_8()
         {
             // Arrange
             var quoteRequestItems = new List<QuoteRequestItem>
@@ -194,7 +194,7 @@ namespace Brewery_wholesale_managementTests
             var service = new QuoteService(new BreweryDbContext(_options));
 
             // Act
-            var result = service.RequestQuote(1, quoteRequestItems);
+            var result = await service.RequestQuote(1, quoteRequestItems);
 
             // Assert
             Assert.NotNull(result);
@@ -213,7 +213,7 @@ namespace Brewery_wholesale_managementTests
 
 
         [Fact]
-        public void RequestQuote_WithValidData_ShouldReturnValidQuoteResponse_Beer1biggerthan10_beer2biggerthan20_return_319_8()
+        public async Task RequestQuote_WithValidData_ShouldReturnValidQuoteResponse_Beer1biggerthan10_beer2biggerthan20_return_319_8()
         {
             // Arrange
             var quoteRequestItems = new List<QuoteRequestItem>
@@ -231,7 +231,7 @@ namespace Brewery_wholesale_managementTests
             var service = new QuoteService(new BreweryDbContext(_options));
 
             // Act
-            var result = service.RequestQuote(1, quoteRequestItems);
+            var result = await service.RequestQuote(1, quoteRequestItems);
 
             // Assert
             Assert.NotNull(result);

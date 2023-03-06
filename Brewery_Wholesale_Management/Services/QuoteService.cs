@@ -12,14 +12,14 @@ namespace Brewery_Wholesale_Management.Services
         {
             _dbContext = dbContext;
         }
-        public QuoteResponse RequestQuote(int wholesalerId, IEnumerable<QuoteRequestItem> quoteRequestItems)
+        public async Task<QuoteResponse>  RequestQuote(int wholesalerId, IEnumerable<QuoteRequestItem> quoteRequestItems)
         {
             if (quoteRequestItems == null || quoteRequestItems.Count() == 0)
             {
                 throw new ArgumentException("Order cannot be empty");
             }
 
-            var wholesaler = _dbContext.Wholesalers.FirstOrDefault(w => w.Id == wholesalerId);
+            var wholesaler = await _dbContext.Wholesalers.FirstOrDefaultAsync(w => w.Id == wholesalerId);
             if (wholesaler == null)
             {
                 throw new ArgumentException("Wholesaler does not exist");
@@ -36,13 +36,14 @@ namespace Brewery_Wholesale_Management.Services
 
             foreach (var item in quoteRequestItems)
             {
-                var beer = _dbContext.Beers.Include(a => a.WholesalerStocks).FirstOrDefault(b => b.Id == item.BeerId);
+                var beer = await _dbContext.Beers.Include(a => a.WholesalerStocks).FirstOrDefaultAsync(b => b.Id == item.BeerId);
                 if (beer == null)
                 {
                     throw new ArgumentException($"Beer with ID {item.BeerId} does not exist");
                 }
+                var wholesalerStock_ = await _dbContext.WholesalerStocks.FirstOrDefaultAsync(s => s.BeerId == item.BeerId && s.WholesalerId == wholesalerId);
 
-                if (beer.WholesalerStocks.FirstOrDefault(b => b.WholesalerId == wholesalerId)?.WholesalerId != wholesalerId)
+                if (wholesalerStock_?.WholesalerId != wholesalerId)
                 {
                     throw new ArgumentException($"Beer with ID {item.BeerId} is not sold by the wholesaler with ID {wholesalerId}");
                 }

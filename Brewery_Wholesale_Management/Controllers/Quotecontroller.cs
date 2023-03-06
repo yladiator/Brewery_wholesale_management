@@ -17,11 +17,11 @@ namespace Brewery_Wholesale_Management.Controllers
         }
 
         [HttpPost("{wholesalerId}/quote")]
-        public IActionResult RequestQuote(int wholesalerId, [FromBody] IEnumerable<QuoteRequestItem> quoteRequestItems)
+        public async Task<IActionResult> RequestQuote(int wholesalerId, [FromBody] IEnumerable<QuoteRequestItem> quoteRequestItems)
         {
             try
             {
-                var quoteResponse = _quoteService.RequestQuote(wholesalerId, quoteRequestItems);
+                var quoteResponse = await _quoteService.RequestQuote(wholesalerId, quoteRequestItems);
                 return Ok(quoteResponse);
             }
             catch (ArgumentException ex)
